@@ -9,3 +9,11 @@ docker push docker.io/chauhansumit/node-api:latest
 
 docker run -d -p 8080:8080 docker.io/chauhansumit/node-api:latest
 
+# pushing from Macbook pro M1 
+podman buildx build --platform linux/amd64 \
+    -t <your-dockerhub-username>/<your-image-name> \
+    -f Dockerfile \
+    --push \
+    --no-cache \
+    .
+
