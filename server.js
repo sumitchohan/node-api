@@ -1,93 +1,87 @@
 const express = require('express');
-const Joi = require('joi'); //used for validation
 const app = express();
+const Joi = require('joi'); 
 app.use(express.json());
 
-const books = [
-    { title: 'Harry Potter', id: 1 },
-    { title: 'Twilight', id: 2 },
-    { title: 'Lorien Legacies', id: 3 }
+const Avengers = [
+    { Name: 'Captain America', id: 1 },
+    { Name: 'Thor', id: 2 },
+    { Name: 'Hulk', id: 3 },
+    { Name: 'Iron Man', id: 4}
 ]
-
-//READ Request Handlers
+ 
 app.get('/', (req, res) => {
-    res.send('Welcome to Edurekas REST API with Node.js Tutorial!!');
+    res.send('Welcome to Avengers REST API!');
 });
 
-app.get('/api/books', (req, res) => {
-    res.send(books);
+app.get('/api/Avengers', (req, res) => {
+    res.send(Avengers);
 });
 
 app.get('/api/echo/:id', (req, res) => {
-    console.log(`${req.protocol}://${req.hostname}:${req.socket.localPort}/${req.url}`)
-    //console.log(`body=${req.body}`) 
+    console.log(`${req.protocol}://${req.hostname}:${req.socket.localPort}${req.url}`) 
     res.send(`Hello ${req.params.id}`);
 });
 
-
 app.get('/api/delayedPing/:ms', (req, res) => {
-    console.log(`${req.protocol}://${req.hostname}:${req.socket.localPort}/${req.url}`)  
+    console.log(`${req.protocol}://${req.hostname}:${req.socket.localPort}${req.url}`)  
     let ms=parseInt(req.params.ms);
     setTimeout(() => {
         res.send(`OK`);
     }, ms); 
 });
 
-app.get('/api/books/:id', (req, res) => {
-    const book = books.find(c => c.id === parseInt(req.params.id));
-
-    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Ooops... Cant find what you are looking for!</h2>');
-    res.send(book);
+app.get('/api/Avengers/:id', (req, res) => {
+    const avenger = Avengers.find(c => c.id === parseInt(req.params.id));
+    if (!avenger) res.status(404).send('<h2>Not here!</h2>');
+    res.send(avenger);
 });
-
-//CREATE Request Handler
-app.post('/api/books', (req, res) => {
-
-    const { error } = validateBook(req.body);
+ 
+app.post('/api/Avengers', (req, res) => {
+    const { error } = validateAvenger(req.body);
     if (error) {
         res.status(400).send(error.details[0].message)
         return;
     }
-    const book = {
-        id: books.length + 1,
-        title: req.body.title
+    const avenger = {
+        id: Avengers.length + 1,
+        Name: req.body.Name
     };
-    books.push(book);
-    res.send(book);
+    Avengers.push(avenger);
+    res.send(avenger);
 });
 
 //UPDATE Request Handler
-app.put('/api/books/:id', (req, res) => {
-    const book = books.find(c => c.id === parseInt(req.params.id));
-    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Not Found!! </h2>');
+app.put('/api/Avengers/:id', (req, res) => {
+    const avenger = Avengers.find(c => c.id === parseInt(req.params.id));
+    if (!avenger) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Not Found!! </h2>');
 
-    const { error } = validateBook(req.body);
+    const { error } = validateAvenger(req.body);
     if (error) {
         res.status(400).send(error.details[0].message);
         return;
     }
 
-    book.title = req.body.title;
-    res.send(book);
+    avenger.Name = req.body.Name;
+    res.send(avenger);
+});
+ 
+app.delete('/api/Avengers/:id', (req, res) => {
+
+    const avenger = Avengers.find(c => c.id === parseInt(req.params.id));
+    if (!avenger) res.status(404).send('<h2> Not Found!! </h2>');
+
+    const index = Avengers.indexOf(avenger);
+    Avengers.splice(index, 1);
+
+    res.send(avenger);
 });
 
-//DELETE Request Handler
-app.delete('/api/books/:id', (req, res) => {
-
-    const book = books.find(c => c.id === parseInt(req.params.id));
-    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;"> Not Found!! </h2>');
-
-    const index = books.indexOf(book);
-    books.splice(index, 1);
-
-    res.send(book);
-});
-
-function validateBook(book) {
+function validateAvenger(avenger) {
     const schema = {
-        title: Joi.string().min(3).required()
+        Name: Joi.string().min(3).required()
     };
-    return Joi.validate(book, schema);
+    return Joi.validate(avenger, schema);
 
 }
 async function delay(ms){
