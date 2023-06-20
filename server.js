@@ -31,12 +31,22 @@ app.get('/api/delayedPing/:ms', (req, res) => {
     }, ms); 
 });
 
+app.get('/api/httpStatus/:status', (req, res) => {
+    const status =  parseInt(req.params.status);
+    res.status(status).send('<h2>Status</h2>');
+});
+ 
+
 app.get('/api/Avengers/:id', (req, res) => {
     const avenger = Avengers.find(c => c.id === parseInt(req.params.id));
     if (!avenger) res.status(404).send('<h2>Not here!</h2>');
     res.send(avenger);
 });
  
+
+app.get('/api/health', (req, res) => { 
+    res.send("OK");
+});
 app.post('/api/Avengers', (req, res) => {
     const { error } = validateAvenger(req.body);
     if (error) {
