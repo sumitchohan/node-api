@@ -32,6 +32,7 @@ app.get('/api/delayedPing/:ms', (req, res) => {
 });
 
 app.get('/api/httpStatus/:status', (req, res) => {
+    console.log(`${req.protocol}://${req.hostname}:${req.socket.localPort}${req.url}`)  
     const status =  parseInt(req.params.status);
     res.status(status).send('<h2>Status</h2>');
 });
