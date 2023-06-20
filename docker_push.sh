@@ -1,4 +1,6 @@
- 
+git clone https://github.com/sumitchohan/node-api.git
+cd node-api
+
 docker build . -t localhost/node-api:latest -f dockerfile
 docker run -d -p 8080:8080 localhost/node-api:latest 
 docker login -u chauhansumit
